@@ -37,6 +37,15 @@ def get_db():
 def main():
     return FileResponse('app/public/index.html')
 
+@app.post('/api/users')
+def create_users(data = Body(), db: Session = Depends(get_db)):
+    '''Добавляет пользователя и возвращает его данные'''
+    person = Person(name=data['name'], number=data['number'])
+    db.add(person)
+    db.commit()
+    db.refresh(person)
+    return person
+
 
 
 @app.get("/health")

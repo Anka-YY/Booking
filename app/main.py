@@ -42,11 +42,31 @@ def get_users(db: Session = Depends(get_db)):
     '''Отображение всех пользователей на странице'''
     return db.query(Person).all()
 
+@app.get('/api/users/{id}')
+def get_person(id, db: Session = Depends(get_db)):
+    '''Получение одного пользователя и возращение его данных'''
+    person = db.query(Person).filter(Person.id == id).first()
+    if person == None:
+        JSONResponse(status_code=404, content={'message': 'Пользователь не найден'})
+    return person
+
 @app.post('/api/users')
 def create_users(data = Body(), db: Session = Depends(get_db)):
     '''Добавляет пользователя и возвращает его данные'''
     person = Person(name=data['name'], number=data['number'])
     db.add(person)
+    db.commit()
+    db.refresh(person)
+    return person
+
+@app.put('/api/users')
+def edit_users(data = Body(), db: Session = Depends(get_db)):
+    '''Изменение данных пользователя и возвращение всех пользователей'''
+    person = db.query(Person).filter(Person.id == data['id']).first()
+    if person == None:
+        return JSONResponse(status_code=404, content={'message': 'Пользователь не найден'})
+    person.name = data['name']
+    person.number = data['number']
     db.commit()
     db.refresh(person)
     return person

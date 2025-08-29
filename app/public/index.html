@@ -17,8 +17,8 @@ button{margin: 5px;}
             <input id="userName" />
         </p>
         <p>
-            Номер телефона:<br />
-            <input id="userPhone" type="number" />
+            Возраст:<br />
+            <input id="userNumber" type="number" />
         </p>
          <p>
             <button id="saveBtn">Сохранить</button>
@@ -26,7 +26,7 @@ button{margin: 5px;}
         </p>
     </div>
     <table>
-        <thead><tr><th>Имя</th><th>Возраст</th><th></th></tr></thead>
+        <thead><tr><th>Имя</th><th>Номер телефона</th><th></th></tr></thead>
         <tbody>
         </tbody>
     </table>
@@ -58,7 +58,7 @@ button{margin: 5px;}
                 const user = await response.json();
                 document.getElementById("userId").value = user.id;
                 document.getElementById("userName").value = user.name;
-                document.getElementById("userPhone").value = user.age;
+                document.getElementById("userNumber").value = user.number;
             }
             else {
                 // если произошла ошибка, получаем сообщение об ошибке
@@ -67,14 +67,14 @@ button{margin: 5px;}
             }
         }
         // Добавление пользователя
-        async function createUser(userName, userPhone) {
+        async function createUser(userName, userNumber) {
   
             const response = await fetch("api/users", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: userName,
-                    number: userPhone
+                    number: parseInt(userNumber, 10)
                 })
             });
             if (response.ok === true) {
@@ -87,14 +87,14 @@ button{margin: 5px;}
             }
         }
         // Изменение пользователя
-        async function editUser(userId, userName, userPhone) {
+        async function editUser(userId, userName, userNumber) {
             const response = await fetch("api/users", {
                 method: "PUT",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
                     id: userId,
                     name: userName,
-                    number: userPhone
+                    number: userNumber
                 })
             });
             if (response.ok === true) {
@@ -126,7 +126,7 @@ button{margin: 5px;}
         function reset() {
             document.getElementById("userId").value = 
             document.getElementById("userName").value = 
-            document.getElementById("userPhone").value = "";
+            document.getElementById("userNumber").value = "";
         }
         // создание строки для таблицы
         function row(user) {
@@ -138,9 +138,9 @@ button{margin: 5px;}
             nameTd.append(user.name);
             tr.append(nameTd);
   
-            const ageTd = document.createElement("td");
-            ageTd.append(user.age);
-            tr.append(ageTd);
+            const numberTd = document.createElement("td");
+            numberTd.append(user.number);
+            tr.append(numberTd);
   
             const linksTd = document.createElement("td");
   
@@ -166,11 +166,11 @@ button{margin: 5px;}
              
             const id = document.getElementById("userId").value;
             const name = document.getElementById("userName").value;
-            const age = document.getElementById("userPhone").value;
+            const number = document.getElementById("userNumber").value;
             if (id === "")
-                await createUser(name, age);
+                await createUser(name, number);
             else
-                await editUser(id, name, age);
+                await editUser(id, name, number);
             reset();
         });
   

@@ -37,6 +37,11 @@ def get_db():
 def main():
     return FileResponse('app/public/index.html')
 
+@app.get('/api/users')
+def get_users(db: Session = Depends(get_db)):
+    '''Отображение всех пользователей на странице'''
+    return db.query(Person).all()
+
 @app.post('/api/users')
 def create_users(data = Body(), db: Session = Depends(get_db)):
     '''Добавляет пользователя и возвращает его данные'''
@@ -46,7 +51,15 @@ def create_users(data = Body(), db: Session = Depends(get_db)):
     db.refresh(person)
     return person
 
-
+@app.delete('/api/users/{id}')
+def delete_users(id, db: Session = Depends(get_db)):
+    '''Удаление пользователя и возвращение данных без удаленного пользователя'''
+    person = db.query(Person).filter(Person.id == id).first()
+    if person == None:
+        return JSONResponse(status_code=404, content={'message' : 'Пользователь не найден'})
+    db.delete(person)
+    db.commit()
+    return person
 
 @app.get("/health")
 def health_check():

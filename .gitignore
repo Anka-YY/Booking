@@ -172,9 +172,6 @@ tmp/
 *.tmp
 *.temp
 
-# Docker
-docker-compose.override.yml
-
 # Backup files
 *.bak
 *.backup
@@ -184,3 +181,10 @@ docker-compose.override.yml
 *.csv
 *.h5
 *.hdf5
+
+# Docker
+docker-compose.override.yml
+
+# Environment variables
+.env
+!.env.example
